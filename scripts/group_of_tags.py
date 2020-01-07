@@ -143,6 +143,8 @@ class GroupOfTags(object):
 
     def image_detection_results (self, args):
         from agimus_vision.msg import ImageDetectionResult
+        self.res_topic = rospy.Publisher("/agimus/vision/pose/{}_wrt_{}".format(args.meas_parent, args.group + "_measured"),
+                TransformStamped, queue_size = 10)
         rospy.Subscriber ("/agimus/vision/detection", ImageDetectionResult,
                 self.handle_detection_results)
 
@@ -171,12 +173,14 @@ class GroupOfTags(object):
             pMgm = pMc.dot(cMgm)
 
             transform = TransformStamped()
+            transform.header.seq = msg.header.seq
             transform.header.stamp = msg.header.stamp
 
             transform.header.frame_id = args.meas_parent
             transform.child_frame_id = args.group + "_measured"
 
             transform.transform = to_tf_transform (pMgm)
+            self.res_topic.publish(transform)
             self.broadcaster.sendTransform(transform)
             delay = rospy.Time.now() - msg.header.stamp
             max_delay = rospy.get_param('max_delay', 0.3)
