@@ -58,13 +58,13 @@ ps.setParameter("ManipulationPlanner/extendStep", 0.7)
 #from hpp import Quaternion
 #oMsk = (0.10576, -0.0168, 1.6835) + Quaternion().fromRPY(1.8, 0, 0).toTuple()
 #oMsk = (0.30576, -0.0138, 1.5835) + Quaternion().fromRPY(1.8, 0, 0).toTuple()
+#oMsk = (0,0,-0.09, 0, 0, 0, 1)
 #vf.loadObstacleModel(skinTagUrdf, "skin")
 #vf.moveObstacle("skin", oMsk)
 vf.loadObjectModel (AircraftSkin, "skin")
 #vf.loadRobotModelFromString ("skin", AircraftSkin.rootJointType, AircraftSkin.urdfString, AircraftSkin.srdfString)
 #robot.setRootJointPosition("skin", oMsk)
 #robot.setJointPosition("skin/root_joint", oMsk)
-vf.loadPolyhedronObstacleModel('skin', "/home/jmirabel/devel/hpp/src/gerard-bauzil/meshes/AircraftSkinWithFrame.stl")
 
 q0 = robot.getCurrentConfig()
 q0[:4] = [0, -0.9, 0, 1]
