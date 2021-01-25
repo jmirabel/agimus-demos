@@ -125,7 +125,8 @@ q0[robot.rankInConfiguration['tiago/arm_7_joint']] = 0.00
 q0[robot.rankInConfiguration['tiago/gripper_finger_joint']] = \
         q0[robot.rankInConfiguration['tiago/gripper_right_finger_joint']] = 0.002
 
-q0[robot.rankInConfiguration['part/root_joint']:] = [0,0,0,0,0,0,1]
+if not cylinderAsEnvironment:
+    q0[robot.rankInConfiguration['part/root_joint']:] = [0,0,0,0,0,0,1]
 # 2}}}
 
 # {{{2 Constraint graph initialization
@@ -143,8 +144,10 @@ def lockJoint(jname, q, cname=None, constantRhs=True):
 ljs = list()
 ps.createLockedJoint("tiago_base", "tiago/root_joint", [0,0,1,0])
 
-lockJoint("part/root_joint", q0, "lock_part", constantRhs=False)
-c_lock_part = ps.hppcorba.problem.getConstraint("lock_part")
+if not cylinderAsEnvironment:
+    #ljs.append(lockJoint("part/root_joint", q0, "lock_part", constantRhs=False))
+    lockJoint("part/root_joint", q0, "lock_part", constantRhs=False)
+    c_lock_part = ps.hppcorba.problem.getConstraint("lock_part")
 
 for n in robot.jointNames:
     if n.startswith('tiago/gripper_'):
@@ -557,7 +560,10 @@ basePlanner.createEmptyRoadmap()
 basePlannerUsePrecomputedRoadmap = False
 if basePlannerUsePrecomputedRoadmap:
     from os import getcwd, path
-    roadmap_file = getcwd() + "/roadmap-hpp.bin"
+    if cylinderAsEnvironment:
+        roadmap_file = getcwd() + "/roadmap-hpp-short.bin"
+    else:
+        roadmap_file = getcwd() + "/roadmap-hpp.bin"
     if path.exists(roadmap_file):
         print("Reading mobile base roadmap", roadmap_file)
         basePlanner.readRoadmap(roadmap_file)

@@ -26,6 +26,9 @@ desired_pose = msg.pose.pose
 def equal(a, b, attrs, thr):
     for attr in attrs:
         if abs(getattr(a,attr)-getattr(b,attr)) >= thr:
+            #rospy.loginfo("attr {}: {} - {} = {}".format(attr,
+            #    getattr(a,attr), getattr(b,attr),
+            #    getattr(a,attr) - getattr(b,attr))
             return False
     return True
 
